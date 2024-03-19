@@ -1,0 +1,29 @@
+FROM php:8.3-fpm-alpine as build
+
+RUN apk add php-session \
+    php-tokenizer \
+    php-xml \
+    php-ctype \
+    php-curl \
+    php-dom \
+    php-fileinfo \
+    php-mbstring \
+    php-openssl \
+    php-pdo \
+    php-pdo_mysql \
+    php-session \
+    php-tokenizer \
+    php-xml \
+    php-ctype \
+    php-xmlwriter \
+    php-simplexml \
+    composer
+
+RUN docker-php-ext-install mysqli pdo_mysql
+RUN docker-php-ext-enable mysqli pdo_mysql
+
+RUN apk add --update nodejs npm
+
+COPY . /var/www/html
+
+WORKDIR /var/www/html
