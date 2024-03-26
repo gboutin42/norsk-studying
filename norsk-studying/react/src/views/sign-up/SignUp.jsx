@@ -6,7 +6,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import axiosClient from '../../axios';
-import { red } from '@mui/material/colors';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 export default function SignUp() {
     const [firstname, setFirstname] = useState('')
@@ -14,11 +14,11 @@ export default function SignUp() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [passwordConfirmation, setPasswordConfirmation] = useState('')
-    const [error, setError] = useState(null)
+    const [errors, setErrors] = useState([])
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        setError(null);
+        setErrors(null);
 
         axiosClient.post(
             '/signup', {
@@ -31,17 +31,8 @@ export default function SignUp() {
         ).then(({ data }) => {
             console.log(data)
         }).catch((error) => {
-            if (error.response) {
-                const errors = Object.values(error.response.data.errors).reduce((accu, next) => [...accu, ...next], [])
-                const finalErrors = []
-                errors.map(error => {
-                    finalErrors.push(
-                        <Typography color='#FFFFFF'>{error}</Typography>
-                    )
-                })
-                setError(finalErrors)
-            }
-            console.error(error)
+            if (error.response)
+                setErrors(error.response.data.errors)
         })
     };
 
@@ -63,6 +54,8 @@ export default function SignUp() {
                             autoFocus
                             value={firstname}
                             onChange={ev => setFirstname(ev.target.value)}
+                            error={errors && errors.first_name}
+                            helperText={(errors && errors.first_name) ? errors.first_name[0] : null}
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -75,6 +68,8 @@ export default function SignUp() {
                             autoComplete="family-name"
                             value={lastname}
                             onChange={ev => setLastname(ev.target.value)}
+                            error={errors && errors.last_name}
+                            helperText={(errors && errors.last_name) ? errors.last_name[0] : null}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -87,6 +82,8 @@ export default function SignUp() {
                             autoComplete="email"
                             value={email}
                             onChange={ev => setEmail(ev.target.value)}
+                            error={errors && errors.email}
+                            helperText={(errors && errors.email) ? errors.email[0] : null}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -100,6 +97,19 @@ export default function SignUp() {
                             autoComplete="new-password"
                             value={password}
                             onChange={ev => setPassword(ev.target.value)}
+                            error={
+                                errors
+                                && errors.password
+                                && errors.password.filter((value) => value !== "The password field confirmation does not match.").length > 0
+                            }
+                            helperText={(
+                                errors
+                                && errors.password
+                                && errors.password.filter((value) => value !== "The password field confirmation does not match.").length > 0
+                            )
+                                ? errors.password.filter((value) => value  !== "The password field confirmation does not match.")[0]
+                                : null
+                            }
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -112,12 +122,22 @@ export default function SignUp() {
                             id="password-confirmation"
                             value={passwordConfirmation}
                             onChange={ev => setPasswordConfirmation(ev.target.value)}
+                            error={
+                                errors
+                                && errors.password
+                                && errors.password.filter((value) => value  === "The password field confirmation does not match.").length > 0
+                            }
+                            helperText={(
+                                errors
+                                && errors.password
+                                && errors.password.filter((value) => value  === "The password field confirmation does not match.").length > 0
+                            )
+                                ? errors.password.filter((value) => value  === "The password field confirmation does not match.")[0]
+                                : null
+                            }
                         />
                     </Grid>
                 </Grid>
-                {error && <Box bgcolor={red[400]} borderRadius={1} mt={2} p={2}>
-                    {error}
-                </Box>}
                 <Button
                     type="submit"
                     fullWidth
