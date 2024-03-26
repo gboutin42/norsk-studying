@@ -11,7 +11,7 @@ import axiosClient from '../../axios';
 import { userStateContext } from '../../contexts/ContextProvider';
 
 export default function SignInSide() {
-    const { setCurrentUser, setUserToken} = userStateContext()
+    const { setCurrentUser, setUserToken } = userStateContext()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [remember, setRemember] = useState(false)
@@ -75,7 +75,6 @@ export default function SignInSide() {
                 <FormControlLabel
                     control={<Checkbox value={remember} color="primary" onChange={ev => setRemember(ev.target.checked)} />}
                     label="Se souvenir de moi"
-
                 />
                 {
                     errorMessage && <Box>
