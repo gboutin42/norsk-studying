@@ -8,8 +8,10 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import axiosClient from '../../axios';
+import { userStateContext } from '../../contexts/ContextProvider';
 
 export default function SignInSide() {
+    const { setCurrentUser, setUserToken} = userStateContext()
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [remember, setRemember] = useState(false)
@@ -26,15 +28,13 @@ export default function SignInSide() {
             password,
             remember
         }).then(({ data }) => {
-            console.log(data)
+            setUserToken(data.token)
+            setCurrentUser(data.user)
         }).catch(error => {
-            console.log(error)
             if (error.response)
                 setErrors(error.response.data.errors)
-            if (error.response?.data?.error === "The provided credentials are not correct") {
-                console.log("on rentre")
+            if (error.response?.data?.error === "The provided credentials are not correct")
                 setErrorMessage(error.response?.data?.error)
-            }
         })
     };
 

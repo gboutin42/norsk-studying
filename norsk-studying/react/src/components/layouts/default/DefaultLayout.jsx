@@ -1,14 +1,8 @@
 import { Box } from "@mui/material";
-import { Navigate, Outlet } from "react-router-dom";
 import Header from "../../header/Header";
-import { userStateContext } from "../../../contexts/ContextProvider";
+import { Outlet } from "react-router-dom";
 
 function DefaultLayout() {
-    const { currentUser, userToken} = userStateContext()
-
-    if (!userToken)
-        return <Navigate to='/login' />
-
     return (
         <>
             <Header />

@@ -6,9 +6,10 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import axiosClient from '../../axios';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { userStateContext } from '../../contexts/ContextProvider';
 
 export default function SignUp() {
+    const { setCurrentUser, setUserToken} = userStateContext()
     const [firstname, setFirstname] = useState('')
     const [lastname, setLastname] = useState('')
     const [email, setEmail] = useState('')
@@ -29,7 +30,8 @@ export default function SignUp() {
             password_confirmation: passwordConfirmation
         }
         ).then(({ data }) => {
-            console.log(data)
+            setUserToken(data.token)
+            setCurrentUser(data.user)
         }).catch((error) => {
             if (error.response)
                 setErrors(error.response.data.errors)

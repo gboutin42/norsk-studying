@@ -8,10 +8,17 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
+import axiosClient from '../../axios';
+import { userStateContext } from '../../contexts/ContextProvider';
+import { Navigate } from "react-router-dom";
 
 function Header() {
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const { currentUser, userToken, setCurrentUser, setUserToken } = userStateContext()
 
+    if (!userToken)
+        return <Navigate to='/login' />
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -19,6 +26,15 @@ function Header() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const logout = (ev) => {
+        ev.preventDefault()
+        axiosClient.post('/logout')
+            .then((res) => {
+                setCurrentUser({})
+                setUserToken(null)
+            })
+    }
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -64,7 +80,7 @@ function Header() {
                         >
                             <MenuItem onClick={handleClose}>Profile</MenuItem>
                             <MenuItem onClick={handleClose}>My account</MenuItem>
-                            <MenuItem onClick={handleClose}>Logout</MenuItem>
+                            <MenuItem onClick={logout}>Logout</MenuItem>
                         </Menu>
                     </>
                 </Toolbar>
