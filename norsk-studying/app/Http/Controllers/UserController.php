@@ -14,7 +14,6 @@ class UserController extends Controller
     {
         try {
             $users = User::all();
-            return "coucou";
             return response()->json([
                 "success" => true,
                 "code" => 200,
