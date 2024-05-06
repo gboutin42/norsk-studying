@@ -33,6 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('users')->group(function() {
         Route::get('/', [UserController::class, 'index']);
         Route::get('/show/{id?}', [UserController::class, 'show']);
+        Route::put('/edit/{id?}', [UserController::class, 'update']);
     });
 });
 Route::post('/signup', [AuthController::class, 'signup']);

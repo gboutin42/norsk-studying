@@ -12,13 +12,21 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-        return response()->json([
-            "success" => true,
-            "code" => 200,
-            "message" => null,
-            "data" => $users->toArray()
-        ], 200);
+        try {
+            $users = User::all();
+            return response()->json([
+                "success" => true,
+                "code" => 200,
+                "message" => null,
+                "data" => $users->toArray()
+            ], 200);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => 'An error has occured' . $e->getMessage(),
+                'success' => false,
+                'status' => $e->getCode()
+            ], $e->getCode());
+        }
     }
 
     /**
@@ -34,7 +42,30 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $user = User::find($id);
+            if ($user) {
+                return response()->json([
+                    "success" => true,
+                    "code" => 200,
+                    "message" => null,
+                    "data" => $user
+                ], 200);
+            } else {
+                return response()->json([
+                    "success" => true,
+                    "code" => 200,
+                    "message" => "No user found",
+                    "data" => null
+                ], 200);
+            }
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => 'An error has occured' . $e->getMessage(),
+                'success' => false,
+                'status' => $e->getCode()
+            ], $e->getCode());
+        }
     }
 
     /**
