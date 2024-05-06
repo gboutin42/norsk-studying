@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { Navigate, createBrowserRouter } from "react-router-dom";
 import SignInSide from "./views/sign-in-side/SignInSide";
 import SignUp from "./views/sign-up/SignUp";
 import AuthLayout from "./components/layouts/auth/AuthLayout";
@@ -14,6 +14,10 @@ const router = createBrowserRouter([
         path: '/',
         element: <AuthLayout />,
         children: [
+            {
+                path: '/',
+                element: <Navigate to="/login" />
+            },
             {
                 path: '/login',
                 element: <SignInSide />

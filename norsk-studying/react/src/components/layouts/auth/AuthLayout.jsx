@@ -10,7 +10,7 @@ function AuthLayout() {
     const { currentUser, userToken } = userStateContext()
 
     if (userToken)
-        return <Navigate to="/dashboard" />
+        return <Navigate to="/home" />
 
     return (
         <>
