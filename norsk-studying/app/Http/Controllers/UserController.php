@@ -13,8 +13,8 @@ class UserController extends Controller
     public function index()
     {
         try {
-            return "coucou";
             $users = User::all();
+            return "coucou";
             return response()->json([
                 "success" => true,
                 "code" => 200,
