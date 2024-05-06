@@ -7,13 +7,17 @@ function DefaultLayout() {
         <>
             <Header />
             <Box sx={{
-                my: 4,
-                textAlign: 'center',
-                width: '100%'
+                position: "absolute",
+                top: "70px",
+                display: "flex",
+                flexDirection: "column",
+                height: "calc(100% - 70px)",
+                width: "100%",
             }}>
-                <Outlet />
+                <Box sx={{ display: "flex", flexDirection: "row", width: "inherit", height: "inherit", padding: "3% 5%" }}>
+                    <Outlet />
+                </Box>
             </Box>
-            Footer Component
         </>
     );
 }

@@ -1,0 +1,13 @@
+.modal-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.simple-form-max-size {
+    max-height: 90%;
+    max-width: 40%;
+    width: 40%;
+}

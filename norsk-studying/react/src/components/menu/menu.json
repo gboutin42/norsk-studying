@@ -1,0 +1,30 @@
+[
+    {
+        "title": "Home",
+        "type": "item",
+        "link": "/home"
+    },
+    {
+        "title": "Révision",
+        "type": "item",
+        "link": "/revision"
+    },
+    {
+        "title": "Gestion",
+        "type": "group",
+        "children": [
+            {
+                "title": "Mots et phrases",
+                "link": "/manage/words"
+            },
+            {
+                "title": "Verbes",
+                "link": "/manage/verbs"
+            },
+            {
+                "title": "Utilisateurs",
+                "link": "/manage/users"
+            }
+        ]
+    }
+]
