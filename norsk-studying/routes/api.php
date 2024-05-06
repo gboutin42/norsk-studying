@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\VerbController;
+use App\Http\Controllers\WordController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +19,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::prefix('words')->group(function () {
+        Route::get('/', [WordController::class, 'index']);
+        Route::post('/check-answer', [WordController::class, 'checkAnswer']);
+        Route::get('/show/{id?}/{type?}', [WordController::class, 'show']);
+    });
+    Route::prefix('verbs')->group(function () {
+        Route::get('/', [VerbController::class, 'index']);
+        Route::get('/show/{id?}', [VerbController::class, 'show']);
+        Route::post('/check-answer', [VerbController::class, 'checkAnswer']);
+    });
 });
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);

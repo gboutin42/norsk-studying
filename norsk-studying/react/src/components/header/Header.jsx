@@ -4,13 +4,13 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import axiosClient from '../../axios';
 import { userStateContext } from '../../contexts/ContextProvider';
 import { Navigate } from "react-router-dom";
+import CustomMenu from '../menu/CustomMenu';
 
 function Header() {
     const { currentUser, userToken, setCurrentUser, setUserToken } = userStateContext()
@@ -40,15 +40,7 @@ function Header() {
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
                 <Toolbar>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{ mr: 2 }}
-                    >
-                        <MenuIcon />
-                    </IconButton>
+                    <CustomMenu />
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                         Norsk Revisjon
                     </Typography>
