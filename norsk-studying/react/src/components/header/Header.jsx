@@ -31,9 +31,18 @@ function Header() {
         ev.preventDefault()
         axiosClient.post('/logout')
             .then((res) => {
-                setCurrentUser({})
+                setCurrentUser(null)
                 setUserToken(null)
             })
+    }
+
+    const handleClick = (ev) => {
+        console.log(currentUser)
+        ev.preventDefault()
+        axiosClient.get('users/show/' + currentUser.id).then((response) => {
+            console.log(response)
+        })
+        console.log('on click')
     }
 
     return (
@@ -70,8 +79,7 @@ function Header() {
                             open={Boolean(anchorEl)}
                             onClose={handleClose}
                         >
-                            <MenuItem onClick={handleClose}>Profile</MenuItem>
-                            <MenuItem onClick={handleClose}>My account</MenuItem>
+                            <MenuItem onClick={handleClick}>My account</MenuItem>
                             <MenuItem onClick={logout}>Logout</MenuItem>
                         </Menu>
                     </>

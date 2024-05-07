@@ -3,6 +3,7 @@ import { useSnackbar } from 'notistack';
 import AbortControllerSignal from '../../../components/providers/AbortController';
 import { useEffect, useState } from 'react';
 import axiosClient from '../../../axios';
+import { renderDate } from '../../../components/functions/date';
 
 function Users() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -59,7 +60,8 @@ function Users() {
             headerAlign: 'center',
             align: 'center',
             flex: 1,
-            type: 'date'
+            type: 'date',
+            valueFormatter: ({ value }) => renderDate(value)
         }
     ]
 
@@ -68,8 +70,8 @@ function Users() {
             setIsLoadingData(true)
         axiosClient.get('/users', { signal: signal })
             .then(response => {
-                if (response.success && response.data?.items?.length > 0) {
-                    setTable(response.data.items)
+                if (response.data && response.data.success && response.data?.data?.length > 0) {
+                    setTable(response.data.data)
                     setIsLoadingData(false)
                 } else
                     setAlert('warning', "Aucun utilisateurs n'a pu être récupérés")
@@ -83,7 +85,6 @@ function Users() {
     return <>
         <DataGrid
             checkboxSelection
-            getRowId={(row) => row.id_gcc_cmde}
             autoHeight
             columns={columns}
             rows={table}
