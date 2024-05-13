@@ -1,4 +1,3 @@
-import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -11,14 +10,21 @@ import axiosClient from '../../axios';
 import { userStateContext } from '../../contexts/ContextProvider';
 import { Navigate } from "react-router-dom";
 import CustomMenu from '../menu/CustomMenu';
+import AbortControllerSignal from '../providers/AbortController';
+import { useEffect, useState } from 'react';
 
 function Header() {
     const { currentUser, userToken, setCurrentUser, setUserToken } = userStateContext()
+    const [isClicked, setIsClicked] = useState(false)
+
+    useEffect(() => {
+        if (isClicked) AbortControllerSignal([getUser])
+    }, [isClicked])
 
     if (!userToken)
         return <Navigate to='/login' />
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -39,10 +45,23 @@ function Header() {
     const handleClick = (ev) => {
         console.log(currentUser)
         ev.preventDefault()
-        axiosClient.get('users/show/' + currentUser.id).then((response) => {
-            console.log(response)
-        })
+        if (!isClicked)
+            setIsClicked(true)
+
         console.log('on click')
+    }
+
+    const getUser = (signal = null) => {
+        axiosClient.get('users/show/' + currentUser.id, { signal: signal })
+            .then((response) => {
+                if (response.data.success && response.data.data) {
+                    console.log('in if')
+                } else {
+                    console.log('in else')
+
+                }
+                setIsClicked(false)
+            })
     }
 
     return (
