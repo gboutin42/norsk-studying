@@ -48,11 +48,12 @@ function Users() {
             flex: 1,
         },
         {
-            field: 'role',
+            field: 'admin',
             headerName: 'Role',
             headerAlign: 'center',
             align: 'center',
             flex: 1,
+            valueFormatter: ({ value }) => value === 1 ? "Administrateur" : "Utilisateur"
         },
         {
             field: 'created_at',
@@ -75,8 +76,6 @@ function Users() {
                     setIsLoadingData(false)
                 } else
                     setAlert('warning', "Aucun utilisateurs n'a pu être récupérés")
-            }).catch(error => {
-                setAlert('warning', "Aucun utilisateurs n'a pu être récupérés")
             })
     }
 

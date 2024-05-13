@@ -12,8 +12,10 @@ import menu from './menu.json';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useLocation } from 'react-router-dom';
+import { userStateContext } from '../../contexts/ContextProvider';
 
 export default function CustomMenu() {
+    const { currentUser } = userStateContext()
     const [open, setOpen] = useState(false)
     const [openCollapse, setOpenCollapse] = useState(false)
     const [currentOpenMenu, setCurrentOpenMenu] = useState(null)
@@ -38,55 +40,65 @@ export default function CustomMenu() {
         setCurrentOpenMenu(key)
     }
 
+    const checkRight = (right) => {
+        if (right === "admin")
+            return currentUser.admin
+        return true
+    }
+
     const list = () => (
         <Box role="presentation" >
             <List>
                 {menu.map((item) => {
-                    return <>
-                        {item.type === "group"
-                            ? <>
-                                <ListItemButton
-                                    sx={{
-                                        px: 2.5,
-                                        width: "100%"
-                                    }}
-                                    onClick={() => handleOpenCollapse(item.title)}>
-                                    <ListItemText primary={item.title} />
-                                    {openCollapse && currentOpenMenu === item.title ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                                </ListItemButton>
-                                <Collapse in={openCollapse && currentOpenMenu === item.title} key={item.title}>
-                                    {item.children.map(({ title, link }) => (
-                                        <ListItemButton
-                                            component={Link}
-                                            to={link}
-                                            sx={{
-                                                px: 5,
-                                                width: "100%"
-                                            }}
-                                            onClick={toggleDrawer(false, link)}
-                                            onKeyDown={toggleDrawer(false, link)}
-                                        >
-                                            <ListItemText primary={title} />
-                                        </ListItemButton>
-                                    ))}
-                                </Collapse>
-                            </>
-                            : <ListItem key={item.title} disablePadding>
-                                <ListItemButton
-                                    component={Link}
-                                    to={item.link}
-                                    sx={{
-                                        px: 2.5,
-                                        width: "100%"
-                                    }}
-                                    onClick={toggleDrawer(false, item.link)}
-                                    onKeyDown={toggleDrawer(false, item.link)}
-                                >
-                                    <ListItemText primary={item.title} />
-                                </ListItemButton>
-                            </ListItem>
-                        }
-                    </>
+                    if (checkRight(item.right))
+                        return <>
+                            {item.type === "group"
+                                ? <>
+                                    <ListItemButton
+                                        sx={{
+                                            px: 2.5,
+                                            width: "100%"
+                                        }}
+                                        onClick={() => handleOpenCollapse(item.title)}>
+                                        <ListItemText primary={item.title} />
+                                        {openCollapse && currentOpenMenu === item.title ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                    </ListItemButton>
+                                    <Collapse in={openCollapse && currentOpenMenu === item.title} key={item.title}>
+                                        {item.children.map(({ title, link, right }) => {
+                                            if (checkRight(right))
+                                                return (
+                                                    <ListItemButton
+                                                        component={Link}
+                                                        to={link}
+                                                        sx={{
+                                                            px: 5,
+                                                            width: "100%"
+                                                        }}
+                                                        onClick={toggleDrawer(false, link)}
+                                                        onKeyDown={toggleDrawer(false, link)}
+                                                    >
+                                                        <ListItemText primary={title} />
+                                                    </ListItemButton>
+                                                )
+                                        })}
+                                    </Collapse>
+                                </>
+                                : <ListItem key={item.title} disablePadding>
+                                    <ListItemButton
+                                        component={Link}
+                                        to={item.link}
+                                        sx={{
+                                            px: 2.5,
+                                            width: "100%"
+                                        }}
+                                        onClick={toggleDrawer(false, item.link)}
+                                        onKeyDown={toggleDrawer(false, item.link)}
+                                    >
+                                        <ListItemText primary={item.title} />
+                                    </ListItemButton>
+                                </ListItem>
+                            }
+                        </>
                 }
                 )}
             </List>

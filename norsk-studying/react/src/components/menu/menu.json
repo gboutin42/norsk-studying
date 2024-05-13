@@ -2,12 +2,14 @@
     {
         "title": "Home",
         "type": "item",
-        "link": "/home"
+        "link": "/home",
+        "right": "all"
     },
     {
         "title": "Révision",
         "type": "item",
-        "link": "/revision"
+        "link": "/revision",
+        "right": "all"
     },
     {
         "title": "Gestion",
@@ -15,16 +17,20 @@
         "children": [
             {
                 "title": "Mots et phrases",
-                "link": "/manage/words"
+                "link": "/manage/words",
+                "right": "admin"
             },
             {
                 "title": "Verbes",
-                "link": "/manage/verbs"
+                "link": "/manage/verbs",
+                "right": "admin"
             },
             {
                 "title": "Utilisateurs",
-                "link": "/manage/users"
+                "link": "/manage/users",
+                "right": "admin"
             }
-        ]
+        ],
+        "right": "admin"
     }
 ]
