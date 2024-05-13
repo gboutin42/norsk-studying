@@ -20,22 +20,22 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::prefix('words')->group(function () {
-        Route::get('/', [WordController::class, 'index']);
-        Route::post('/check-answer', [WordController::class, 'checkAnswer']);
-        Route::get('/show/{id?}/{type?}', [WordController::class, 'show']);
+    Route::prefix('users')->group(function () {
+        Route::get('/', [UserController::class, 'index']);
+        Route::get('/show/{id?}', [UserController::class, 'show']);
+        Route::put('/edit/{id?}', [UserController::class, 'update']);
     });
     Route::prefix('verbs')->group(function () {
         Route::get('/', [VerbController::class, 'index']);
         Route::get('/show/{id?}', [VerbController::class, 'show']);
         Route::post('/check-answer', [VerbController::class, 'checkAnswer']);
     });
-    Route::prefix('users')->group(function() {
-        Route::get('/', [UserController::class, 'index']);
-        Route::get('/show/{id?}', [UserController::class, 'show']);
-        Route::put('/edit/{id?}', [UserController::class, 'update']);
+    Route::prefix('words')->group(function () {
+        Route::get('/', [WordController::class, 'index']);
+        Route::post('/check-answer', [WordController::class, 'checkAnswer']);
+        Route::get('/show/{id?}/{type?}', [WordController::class, 'show']);
     });
 });
+
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
-
