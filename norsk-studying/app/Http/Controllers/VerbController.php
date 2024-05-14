@@ -10,6 +10,16 @@ use Illuminate\Support\Str;
 
 class VerbController extends Controller
 {
+    private const WORD_TYPE = [
+        ["value" => '3', "label" => 'Mot'],
+        ["value" => '4', "label" => 'Phrase'],
+    ];
+
+    private const SWITCH_OPTIONS = [
+        ["value" => '1', "label" => 'Actif'],
+        ["value" => '0', "label" => 'Inactif']
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -288,6 +298,86 @@ class VerbController extends Controller
                 'success' => false,
                 'status' => 500
             ], 500);
+        }
+    }
+
+    public function getForm()
+    {
+        try {
+
+            $fields = [
+                [
+                    "key" => 'norwegian',
+                    "label" => 'Norvégien',
+                    "type" => 'text',
+                    "xs" => 12,
+                    "sm" => 6,
+                    "rules" => [
+                        "required" => true
+                    ]
+                ],
+                [
+                    "key" => 'french',
+                    "label" => 'Français',
+                    "type" => 'text',
+                    "xs" => 12,
+                    "sm" => 6,
+                    "rules" => [
+                        "required" => true
+                    ]
+                ],
+                [
+                    "key" => 'help',
+                    "label" => 'Aide',
+                    "type" => 'text',
+                    "xs" => 12,
+                    "sm" => 6
+                ],
+                [
+                    "key" => 'type',
+                    "label" => 'Prénom',
+                    "type" => "select",
+                    "value" => self::WORD_TYPE[0]['value'],
+                    "options" => self::WORD_TYPE,
+                    "rules" => [
+                        "required" => true
+                    ]
+
+                ],
+                [
+                    "key" => 'status',
+                    "label" => 'Email',
+                    "type" => 'toggleRadio',
+                    "value" => self::SWITCH_OPTIONS[1]["value"],
+                    "options" => self::SWITCH_OPTIONS,
+                    "rules" => [
+                        "required" => true
+                    ]
+                ]
+            ];
+
+
+            return response()->json([
+                "data" => $fields,
+                "success" => true,
+                "message" => null
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "data" => null,
+                "message" => "An error has occured: " . $th->getMessage(),
+                "success" => false,
+                "code" => $th->getCode()
+            ], 500);
+        }
+    }
+
+    public function getFormEdit(int $id)
+    {
+        try {
+            //code...
+        } catch (\Throwable $th) {
+            //throw $th;
         }
     }
 }

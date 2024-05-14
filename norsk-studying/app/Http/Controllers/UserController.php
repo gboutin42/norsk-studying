@@ -83,4 +83,22 @@ class UserController extends Controller
     {
         //
     }
+
+    public function getForm()
+    {
+        try {
+            //code...
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function getFormEdit(int $id)
+    {
+        try {
+            //code...
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
 }

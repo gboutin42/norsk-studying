@@ -16,6 +16,16 @@ class WordController extends Controller
     const TYPE_WORD = 3;
     const TYPE_SENTENCE = 4;
 
+    private const WORD_TYPE = [
+        ["value" => '3', "label" => 'Mot'],
+        ["value" => '4', "label" => 'Phrase'],
+    ];
+
+    private const SWITCH_OPTIONS = [
+        ["value" => '1', "label" => 'Actif'],
+        ["value" => '0', "label" => 'Inactif']
+    ];
+
     /**
      * Display a listing of the resource.
      */
@@ -284,6 +294,148 @@ class WordController extends Controller
                 'success' => false,
                 'status' => 500
             ], 500);
+        }
+    }
+
+    public function getForm()
+    {
+        try {
+            $fields = [
+                [
+                    "key" => 'norwegian',
+                    "label" => 'Norvégien',
+                    "type" => 'text',
+                    "rules" => [
+                        "required" => true
+                    ]
+                ],
+                [
+                    "key" => 'french',
+                    "label" => 'Français',
+                    "type" => 'text',
+                    "rules" => [
+                        "required" => true
+                    ]
+                ],
+                [
+                    "key" => 'help',
+                    "label" => 'Aide',
+                    "type" => 'text',
+                ],
+                [
+                    "key" => 'type',
+                    "label" => 'Type',
+                    "type" => "select",
+                    "value" => self::WORD_TYPE[0]['value'],
+                    "options" => self::WORD_TYPE,
+                    "xs" => 12,
+                    "sm" => 6,
+                    "rules" => [
+                        "required" => true
+                    ]
+
+                ],
+                [
+                    "key" => 'status',
+                    "label" => 'Statut',
+                    "type" => 'toggleRadio',
+                    "value" => self::SWITCH_OPTIONS[0]["value"],
+                    "options" => self::SWITCH_OPTIONS,
+                    "xs" => 12,
+                    "sm" => 6
+                ]
+            ];
+
+            return response()->json([
+                "fields" => $fields,
+                "success" => true,
+                "message" => null
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "data" => null,
+                "message" => "An error has occured: " . $th->getMessage(),
+                "success" => false,
+                "code" => $th->getCode()
+            ], 500);
+        }
+    }
+
+    public function getFormEdit(int $id)
+    {
+        try {
+            $word = Word::find($id);
+
+            if ($word) {
+                $fields = [
+                    [
+                        "key" => 'norwegian',
+                        "label" => 'Norvégien',
+                        "type" => 'text',
+                        "value" => $word->norwegian,
+                        "rules" => [
+                            "required" => true
+                        ]
+                    ],
+                    [
+                        "key" => 'french',
+                        "label" => 'Français',
+                        "type" => 'text',
+                        "value" => $word->french,
+                        "rules" => [
+                            "required" => true
+                        ]
+                    ],
+                    [
+                        "key" => 'help',
+                        "label" => 'Aide',
+                        "type" => 'text',
+                        "value" => $word->help
+                    ],
+                    [
+                        "key" => 'type',
+                        "label" => 'Type',
+                        "type" => "select",
+                        "value" => (string)$word->type,
+                        "options" => self::WORD_TYPE,
+                        "xs" => 12,
+                        "sm" => 6,
+                        "rules" => [
+                            "required" => true
+                        ]
+    
+                    ],
+                    [
+                        "key" => 'status',
+                        "label" => 'Statut',
+                        "type" => 'toggleRadio',
+                        "value" => (string)$word->status,
+                        "options" => self::SWITCH_OPTIONS,
+                        "xs" => 12,
+                        "sm" => 6
+                    ]
+                ];
+
+                return response()->json([
+                    "fields" => $fields,
+                    "success" => true,
+                    "message" => null
+                ]);
+            }
+
+            return response()->json([
+                "data" => ["id" => $id],
+                "message" => "This model doesn't exist",
+                "code" => 500,
+                "success" => false
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "data" => null,
+                "message" => $th->getMessage(),
+                "code" => $th->getCode(),
+                "success" => false
+            ]);
         }
     }
 }
