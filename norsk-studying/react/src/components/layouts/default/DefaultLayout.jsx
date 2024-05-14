@@ -17,7 +17,14 @@ function DefaultLayout() {
                 width: "100%",
             }}>
                 <Breadcrumb sx={{ margin: "2% 5%" }} />
-                <Box sx={{ display: "flex", flexDirection: "column", width: "inherit", height: "inherit", padding: "0 5% 2% 5%" }}>
+                <Box sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "inherit",
+                    height: "calc(100% - 90px)",
+                    padding: "0 5% 2% 5%",
+                    overflow: "auto"
+                }}>
                     <Outlet />
                 </Box>
             </Box>

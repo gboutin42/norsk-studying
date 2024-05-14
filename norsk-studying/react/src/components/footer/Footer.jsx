@@ -8,7 +8,7 @@ export default function Footer(props) {
         height={50}
         width={"100%"}
         bottom={0}
-        position="absolute"
+        position="fixed"
         boxShadow={12}
         borderTop={1}
         borderColor={grey[300]}
