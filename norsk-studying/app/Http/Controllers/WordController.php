@@ -85,21 +85,21 @@ class WordController extends Controller
     private function getNextRandomWord(int $previousId = 0, int $type = 1): \App\Models\Verb|\App\Models\Word|null
     {
         if ($type === self::TYPE_VERB) {
-            $words = Verb::whereStatus(1)->get();
+            $ids = Verb::whereStatus(1)->pluck("id")->toArray();
         } else {
-            $words = $type === self::TYPE_ALL
-                ? Word::whereStatus(1)->get()
-                : Word::whereStatus(1)->whereType($type)->get();
+            $ids = $type === self::TYPE_ALL
+                ? Word::whereStatus(1)->pluck("id")->toArray()
+                : Word::whereStatus(1)->where("type", $type)->pluck("id")->toArray();
         }
-        $length = $words->count();
-        if ($length >= 1) {
-            $random = random_int(1, $length);
+
+        if (count($ids) > 0) {
+            $random = $ids[array_rand($ids, 1)];
             while ($random === $previousId) {
-                $random = random_int(1, $length);
+                $random = $ids[array_rand($ids, 1)];
             }
             $word = $this->getOne($random, $type);
 
-            return $word ?? $this->getNextRandomWord($previousId);
+            return $word ?? $this->getNextRandomWord($previousId, $type);
         }
 
         return null;
@@ -158,7 +158,7 @@ class WordController extends Controller
         } else {
             $result = $type === self::TYPE_ALL
                 ? Word::whereStatus(1)->whereId($id)->first()
-                : Word::whereStatus(1)->whereType($type)->whereId($id)->first();
+                : Word::whereStatus(1)->where("type", $type)->whereId($id)->first();
         }
 
         return $result;
