@@ -41,7 +41,6 @@ export default function CustomMenu() {
     }
 
     const checkRight = (right) => {
-        console.log(currentUser)
         if (right === "admin")
             return currentUser.admin === 1
         return true
