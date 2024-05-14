@@ -3,7 +3,7 @@ import { useSnackbar } from 'notistack';
 import AbortControllerSignal from '../../../components/providers/AbortController';
 import { useEffect, useState } from 'react';
 import axiosClient from '../../../axios';
-import { Chip } from '@mui/material';
+import { Box, Chip } from '@mui/material';
 import { renderDate } from '../../../components/functions/date';
 
 function displayStatus(value) {
@@ -182,10 +182,9 @@ function Verbs() {
 
     useEffect(() => AbortControllerSignal([getDatasTable]), [])
 
-    return <>
+    return <Box height="inherit" width="inherit">
         <DataGrid
             checkboxSelection
-            autoHeight
             columns={columns}
             rows={table}
             sx={{ boxShadow: 5 }}
@@ -206,7 +205,7 @@ function Verbs() {
             disableColumnSelector
             disableDensitySelector
         />
-    </>
+    </Box>
 }
 
 export default Verbs;

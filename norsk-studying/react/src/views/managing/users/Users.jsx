@@ -4,6 +4,7 @@ import AbortControllerSignal from '../../../components/providers/AbortController
 import { useEffect, useState } from 'react';
 import axiosClient from '../../../axios';
 import { renderDate } from '../../../components/functions/date';
+import { Box } from '@mui/material';
 
 function Users() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -81,10 +82,9 @@ function Users() {
 
     useEffect(() => AbortControllerSignal([getDatasTable]), [])
 
-    return <>
+    return <Box height="inherit" width="inherit">
         <DataGrid
             checkboxSelection
-            autoHeight
             columns={columns}
             rows={table}
             sx={{ boxShadow: 5 }}
@@ -105,7 +105,7 @@ function Users() {
             disableColumnSelector
             disableDensitySelector
         />
-    </>
+    </Box>
 }
 
 export default Users;

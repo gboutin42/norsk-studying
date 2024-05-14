@@ -70,7 +70,7 @@ function Header() {
                         <Toolbar>
                             <CustomMenu />
                             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                                Norsk Revisjon
+                                Tongue Twist Norway
                             </Typography>
                             <>
                                 <IconButton

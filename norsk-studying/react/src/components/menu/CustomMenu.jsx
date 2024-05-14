@@ -11,7 +11,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import menu from './menu.json';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useLocation } from 'react-router-dom';
 import { userStateContext } from '../../contexts/ContextProvider';
 
 export default function CustomMenu() {
