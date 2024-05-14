@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import axiosClient from '../../../axios';
 import { Box, Chip } from '@mui/material';
 import { renderDate } from '../../../components/functions/date';
+import AddNewWord from './form/AddNewWord';
+import EditWord from './form/EditWord';
 
 function displayValueName(value) {
     const match = [
@@ -41,8 +43,10 @@ function Words() {
     const [table, setTable] = useState([]);
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
-        pageSize: 5,
+        pageSize: 10,
     });
+    const [openEdit, setOpenEdit] = useState(false)
+    const [id, setId] = useState(null)
 
     const columns = [
         {
@@ -112,17 +116,7 @@ function Words() {
                 <GridActionsCellItem
                     // icon={<EditIcon />}
                     label="Modifier"
-                    onClick={() => {
-                        // setUserId(params.row.id_user)
-                        // LeonixApi.Get("users/" + params.row.id_user + "/form", { userType: "user" })
-                        //     .then(response => {
-                        //         if (response.success) {
-                        //             setListInputsUpdate(response.data.fields)
-                        //             handleOpenFormUpdate()
-                        //         } else
-                        //             setAlert('warning', "Impossible de récupérer les informations du formulaire")
-                        //     })
-                    }}
+                    onClick={() => handleEditWord(params.row.id)}
                     showInMenu
                 />,
                 <GridActionsCellItem
@@ -159,6 +153,11 @@ function Words() {
         }
     ]
 
+    const handleEditWord = (id) => {
+        setOpenEdit(true)
+        setId(id)
+    }
+
     const getDatasTable = (signal = null) => {
         if (!isLoadingData)
             setIsLoadingData(true)
@@ -183,7 +182,7 @@ function Words() {
             columns={columns}
             rows={table}
             sx={{ boxShadow: 5 }}
-            pageSizeOptions={[5, 10, 20, 50, 100]}
+            pageSizeOptions={[10, 20, 50, 100]}
             paginationModel={paginationModel}
             onPaginationModelChange={setPaginationModel}
             pagination
@@ -200,6 +199,10 @@ function Words() {
             disableColumnSelector
             disableDensitySelector
         />
+        <AddNewWord getDatasTable={getDatasTable} />
+        {openEdit &&
+            <EditWord id={id} open={openEdit} setOpen={setOpenEdit} />
+        }
     </Box>
 }
 

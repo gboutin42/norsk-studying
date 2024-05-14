@@ -6,10 +6,7 @@ import CustomFormSwitch from '../Switch/CustomFormSwitch'
 import CustomFormCheckbox from '../Checkbox/CustomFormCheckbox'
 import CustomFormToggle from '../Toggle/CustomFormToggle'
 import CustomFormToggleRadio from '../Toggle/CustomFormToggleRadio'
-import CustomFormDatePicker from '../DatePicker/CustomFormDatePicker'
 import PropTypes from 'prop-types'
-import CustomFormTimePicker from '../TimePicker/CustomFormTimePicker'
-import CustomFormPhoneInput from '../PhoneInput/CustomFormPhoneInput'
 
 DynamicComponent.propTypes = {
     listInputs: PropTypes.array.isRequired,
@@ -133,25 +130,6 @@ export default function DynamicComponent(props) {
         props.setIsDisableSubmitButtonAndInputs(newInputs)
     }
 
-    const handleChangeDatePicker = (e, newValue) => {
-        handleChangeBasic(e, newValue)
-    }
-
-    const handleChangeTimePicker = (e, newValue) => {
-        handleChangeBasic(e, newValue)
-    }
-
-    const handleChangePhoneInput = (key, newValue) => {
-        let newInputs = [...inputs];
-
-        inputs.map((input, index) => {
-            if (newInputs[index].key === key)
-                newInputs[index].value = newValue
-        })
-
-        props.setIsDisableSubmitButtonAndInputs(newInputs)
-    }
-
     const dynamicComponent = (input) => {
         switch (input.type) {
             case 'checkbox':
@@ -166,12 +144,6 @@ export default function DynamicComponent(props) {
                 return <CustomFormToggleRadio input={input} onChange={handleChangeToggleRadio} />
             case 'select':
                 return <CustomFormSelect input={input} onChange={handleChangeSelect} />
-            case 'date':
-                return <CustomFormDatePicker input={input} onChange={handleChangeDatePicker} />
-            case 'time':
-                return <CustomFormTimePicker input={input} onChange={handleChangeTimePicker} />
-            case 'phone':
-                return <CustomFormPhoneInput input={input} onChange={handleChangePhoneInput} />
             default:
                 return <CustomFormTextfield input={input} onChange={handleChangeTextfield} />
         }

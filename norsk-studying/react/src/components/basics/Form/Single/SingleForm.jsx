@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Button, FormControl, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Grid } from '@mui/material'
+import { Box, Button, FormControl, IconButton, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
 import './SingleForm.css'
 import PropTypes from 'prop-types'
@@ -53,7 +53,7 @@ function SingleForm(props) {
         <Dialog open={props.open} onClose={handleClose} fullWidth>
             <DialogTitle>
                 <Box display='flex' alignItems='center' justifyContent='space-between'>
-                    {props.title ?? 'Title is missing'}
+                    <Typography color='primary' fontWeight={600}>{props.title ?? 'Title is missing'}</Typography>
                     <IconButton
                         aria-label="close"
                         onClick={handleClose}
@@ -81,7 +81,7 @@ function SingleForm(props) {
                     }
                 </DialogContent>
                 <DialogActions sx={{ padding: "20px 24px" }}>
-                    <Button onClick={handleClose} variant="text" color='secondary' size="large">Annuler</Button>
+                    <Button onClick={handleClose} variant="text" size="large">Annuler</Button>
                     <Button disabled={isDisableSubmitButton} onSubmit={handleSubmit} onClick={handleSubmit} variant="contained" size="large">Valider</Button>
                 </DialogActions>
             </FormControl>

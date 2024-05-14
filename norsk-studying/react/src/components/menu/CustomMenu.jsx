@@ -113,7 +113,7 @@ export default function CustomMenu() {
                     color="inherit"
                     aria-label="menu"
                 >
-                    <MenuIcon sx={{ color: "black" }} />
+                    <MenuIcon sx={{ color: "#fff" }} />
                 </IconButton>
             </Button>
             <SwipeableDrawer
