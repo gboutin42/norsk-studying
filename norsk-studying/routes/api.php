@@ -24,16 +24,30 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [UserController::class, 'index']);
         Route::get('/show/{id?}', [UserController::class, 'show']);
         Route::put('/edit/{id?}', [UserController::class, 'update']);
+        Route::prefix('/form')->group(function () {
+            Route::get('/', [UserController::class, 'getForm']);
+            Route::get('/{id}', [UserController::class, 'getFormEdit']);
+        });
     });
     Route::prefix('verbs')->group(function () {
         Route::get('/', [VerbController::class, 'index']);
         Route::get('/show/{id?}', [VerbController::class, 'show']);
         Route::post('/check-answer', [VerbController::class, 'checkAnswer']);
+        Route::prefix('/form')->group(function () {
+            Route::get('/', [VerbController::class, 'getForm']);
+            Route::get('/{id}', [VerbController::class, 'getFormEdit']);
+        });
     });
     Route::prefix('words')->group(function () {
         Route::get('/', [WordController::class, 'index']);
+        Route::post('/', [WordController::class, 'store']);
+        Route::patch('/edit/{id}', [WordController::class, 'update']);
         Route::post('/check-answer', [WordController::class, 'checkAnswer']);
         Route::get('/show/{id?}/{type?}', [WordController::class, 'show']);
+        Route::prefix('/form')->group(function () {
+            Route::get('/', [WordController::class, 'getForm']);
+            Route::get('/{id}', [WordController::class, 'getFormEdit']);
+        });
     });
 });
 
