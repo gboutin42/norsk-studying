@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import axiosClient from "../../../../axios";
 import { useSnackbar } from "notistack";
 
-export default function AddNewVerb(props) {
+export default function AddVerb(props) {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     const setAlert = (type, message) => {
         enqueueSnackbar(

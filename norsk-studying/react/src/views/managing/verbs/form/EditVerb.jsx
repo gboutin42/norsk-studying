@@ -55,7 +55,6 @@ export default function EditVerb(props) {
             .catch(error => {
                 setAlert('error', error)
             })
-
     }
 
     return (props.open && listInputs) && <SingleForm

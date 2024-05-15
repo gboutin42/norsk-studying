@@ -368,7 +368,6 @@ class VerbController extends Controller
     public function getForm(): \Illuminate\Http\JsonResponse
     {
         try {
-
             $fields = [
                 [
                     "key" => 'translation',

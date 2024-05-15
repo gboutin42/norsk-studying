@@ -10,7 +10,7 @@ import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import EditVerb from './form/EditVerb';
-import AddNewVerb from './form/AddNewVerbs';
+import AddVerb from './form/AddVerb';
 
 function displayStatus(value) {
     const label = ["Inactif", "Actif"];
@@ -118,7 +118,7 @@ function Verbs() {
                 <GridActionsCellItem
                     icon={<EditRoundedIcon />}
                     label="Modifier"
-                    onClick={() => handleEditVerbs(params.row.id)}
+                    onClick={() => handleEditVerb(params.row.id)}
                     showInMenu
                 />,
                 <GridActionsCellItem
@@ -156,7 +156,7 @@ function Verbs() {
         }
     ]
 
-    const handleEditVerbs = (id) => {
+    const handleEditVerb = (id) => {
         setOpenEdit(true)
         setId(id)
     }
@@ -210,7 +210,7 @@ function Verbs() {
             disableColumnSelector
             disableDensitySelector
         />
-        <AddNewVerb getDatasTable={getDatasTable} />
+        <AddVerb getDatasTable={getDatasTable} />
         {openEdit &&
             <EditVerb id={id} open={openEdit} setOpen={setOpenEdit} getDatasTable={getDatasTable} />
         }
