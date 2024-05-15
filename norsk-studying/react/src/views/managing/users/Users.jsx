@@ -1,10 +1,23 @@
-import { DataGrid, frFR, GridToolbar } from '@mui/x-data-grid';
+import { DataGrid, frFR, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 import { useSnackbar } from 'notistack';
 import AbortControllerSignal from '../../../components/providers/AbortController';
 import { useEffect, useState } from 'react';
 import axiosClient from '../../../axios';
 import { renderDate } from '../../../components/functions/date';
-import { Box } from '@mui/material';
+import { Box, Chip } from '@mui/material';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import AdminPanelSettingsRoundedIcon from '@mui/icons-material/AdminPanelSettingsRounded';
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
+import AddUser from './form/AddUser';
+import EditUser from './form/EditUser';
+
+function displayAdmin(value) {
+    const label = ["Utilisateur", "Administrateur"];
+    const color = ["success", "info"];
+
+    return <Chip label={label[value]} color={color[value]} sx={{ borderRadius: '4px', fontWeight: 700 }} />
+}
 
 function Users() {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -26,6 +39,9 @@ function Users() {
         page: 0,
         pageSize: 5,
     });
+    const [openEdit, setOpenEdit] = useState(false)
+    const [id, setId] = useState(null)
+
     const columns = [
         {
             field: 'last_name',
@@ -54,7 +70,7 @@ function Users() {
             headerAlign: 'center',
             align: 'center',
             flex: 1,
-            valueFormatter: ({ value }) => value === 1 ? "Administrateur" : "Utilisateur"
+            renderCell: ({ value }) => displayAdmin(value)
         },
         {
             field: 'created_at',
@@ -64,8 +80,61 @@ function Users() {
             flex: 1,
             type: 'date',
             valueFormatter: ({ value }) => renderDate(value)
+        },
+        {
+            field: 'actions',
+            type: 'actions',
+            headerName: 'Actions',
+            headerAlign: 'center',
+            align: 'center',
+            width: 80,
+            cellClassName: 'actions',
+            getActions: (params) => [
+                <GridActionsCellItem
+                    icon={<EditRoundedIcon />}
+                    label="Modifier"
+                    onClick={() => handleEditUser(params.row.id)}
+                    showInMenu
+                />,
+                <GridActionsCellItem
+                    icon={params.row.admin === 1 ? <PersonRoundedIcon /> : <AdminPanelSettingsRoundedIcon />}
+                    label={params.row.admin === 1 ? "Utilisateur" : "Admin"}
+                    onClick={() => {
+                        axiosClient.patch('users/' + params.row.id + '/admin')
+                            .then(response => {
+                                if (response.data.success) {
+                                    const data = response.data.data
+                                    setAlert('success', "Le statut est passé à " + (data.admin ? "admin" : "utilisateur"))
+                                    getDatasTable()
+                                } else
+                                    setAlert('error', "Le statut n'a pu être modifié")
+                            })
+                    }}
+                    showInMenu
+                />,
+                <GridActionsCellItem
+                    icon={<DeleteRoundedIcon />}
+                    label="Supprimer"
+                    onClick={() => {
+                        axiosClient.delete('users/' + params.row.id)
+                            .then(response => {
+                                if (response.data.success) {
+                                    setAlert('success', "Utilisateur supprimé")
+                                    getDatasTable()
+                                } else
+                                    setAlert('error', "L'utilisateur' n'a pu être supprimé")
+                            })
+                    }}
+                    showInMenu
+                />
+            ]
         }
     ]
+
+    const handleEditUser = (id) => {
+        setOpenEdit(true)
+        setId(id)
+    }
 
     const getDatasTable = (signal = null) => {
         if (!isLoadingData)
@@ -84,7 +153,7 @@ function Users() {
 
     return <Box height="inherit" width="inherit">
         <DataGrid
-            checkboxSelection
+            // checkboxSelection
             columns={columns}
             rows={table}
             sx={{ boxShadow: 5 }}
@@ -105,6 +174,10 @@ function Users() {
             disableColumnSelector
             disableDensitySelector
         />
+        <AddUser getDatasTable={getDatasTable} />
+        {openEdit &&
+            <EditUser id={id} open={openEdit} setOpen={setOpenEdit} getDatasTable={getDatasTable} />
+        }
     </Box>
 }
 

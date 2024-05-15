@@ -27,11 +27,14 @@ Route::middleware('auth:sanctum')->group(function () {
      */
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index']);
-        Route::get('/show/{id?}', [UserController::class, 'show']);
-        Route::put('/edit/{id?}', [UserController::class, 'update']);
-        Route::prefix('/form')->group(function () {
-            Route::get('/', [UserController::class, 'getForm']);
-            Route::get('/{id}', [UserController::class, 'getFormEdit']);
+        Route::post('/', [UserController::class, 'store']);
+        Route::get('/form', [UserController::class, 'getForm']);
+        Route::prefix('{user}')->group(function () {
+            Route::get('/', [UserController::class, 'show']);
+            Route::patch('/', [UserController::class, 'update']);
+            Route::delete('/', [UserController::class, 'destroy']);
+            Route::patch('/admin', [UserController::class, 'changeAdmin']);
+            Route::get('/form', [UserController::class, 'getFormEdit']);
         });
     });
 
