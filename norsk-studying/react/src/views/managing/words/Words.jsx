@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import axiosClient from '../../../axios';
 import { Box, Chip } from '@mui/material';
 import { renderDate } from '../../../components/functions/date';
-import AddNewWord from './form/AddNewWord';
+import AddWord from './form/AddWord';
 import EditWord from './form/EditWord';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
@@ -204,7 +204,7 @@ function Words() {
             disableColumnSelector
             disableDensitySelector
         />
-        <AddNewWord getDatasTable={getDatasTable} />
+        <AddWord getDatasTable={getDatasTable} />
         {openEdit &&
             <EditWord id={id} open={openEdit} setOpen={setOpenEdit} getDatasTable={getDatasTable} />
         }

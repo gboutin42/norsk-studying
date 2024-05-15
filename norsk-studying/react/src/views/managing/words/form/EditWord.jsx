@@ -55,7 +55,6 @@ export default function EditWord(props) {
             .catch(error => {
                 setAlert('error', error)
             })
-
     }
 
     return (props.open && listInputs) && <SingleForm
