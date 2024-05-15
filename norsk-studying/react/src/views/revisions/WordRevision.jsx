@@ -15,7 +15,7 @@ function WordRevision({ type }) {
                     vertical: anchor.vertical,
                     horizontal: anchor.horizontal
                 },
-                autoHideDuration: duration 
+                autoHideDuration: duration
             }
         )
     }
@@ -113,12 +113,12 @@ function WordRevision({ type }) {
         {
             getNewWord
                 ? <Box display="flex" justifyContent='center' mt={8} mb={4}><CircularProgress size={60} /></Box>
-                : <Typography variant="h3" sx={{ mt: 8, mb: 4, fontWeight: 700, textAlign: 'center' }}>{origin[origin.lang]}</Typography>
+                : <Typography variant="h3" sx={{ my: 4, fontWeight: 700, textAlign: 'center' }}>{origin[origin.lang]}</Typography>
         }
 
         {
-            displayAnswer && <Typography variant="h3" sx={{ mt: 8, mb: 4, fontWeight: 700, textAlign: 'center', color: 'green' }}>
-                La bonne réponse était : {origin.lang === "french" ? origin.norwegian : origin.french} !
+            displayAnswer && <Typography variant="h3" sx={{ my: 4, fontWeight: 700, textAlign: 'center', color: 'green' }}>
+                La bonne réponse était : {origin.lang === "french" ? origin.norwegian : origin.french}
             </Typography>
         }
 
@@ -166,6 +166,14 @@ function WordRevision({ type }) {
                 Valider
             </Button>
         </Box>
+        <Button
+            size="large"
+            fullWidth
+            onClick={() => setDisplayAnswer(true)}
+            disabled={pendingStatus || displayAnswer}
+        >
+            Révéler
+        </Button>
         <Typography sx={{ mt: 2, fontWeight: 700, textAlign: 'center' }}>
             {nbWords === 0 ? "Vous n'avez encore aucune bonne réponse !" :
                 "Vous avez révisés " + nbWords + " " + ((nbWords > 1) ? 'mots' : 'mot') + " dans cette catégorie pour le moment !"

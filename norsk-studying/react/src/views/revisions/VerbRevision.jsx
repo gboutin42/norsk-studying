@@ -207,7 +207,7 @@ function VerbRevision({ type }) {
     return <>
         {
             getNewVerb
-                ? <Box display="flex" justifyContent='center' mt={8} mb={4}><CircularProgress size={60} /></Box>
+                ? <Box display="flex" justifyContent='center' my={4}><CircularProgress size={60} /></Box>
                 : displayingVerbs()
         }
 
@@ -242,6 +242,14 @@ function VerbRevision({ type }) {
                 Valider
             </Button>
         </Box>
+        <Button
+            size="large"
+            fullWidth
+            onClick={() => setDisplayAnswers(true)}
+            disabled={pendingStatus || displayAnswers}
+        >
+            Révéler
+        </Button>
         <Typography sx={{ mt: 2, fontWeight: 700, textAlign: 'center' }}>
             {nbGoodAnswers === 0 ? "Vous n'avez encore aucune bonne réponse !" :
                 "Vous avez révisés " + nbGoodAnswers + " " + ((nbGoodAnswers > 1) ? 'verbes' : 'verbe') + " pour le moment !"
