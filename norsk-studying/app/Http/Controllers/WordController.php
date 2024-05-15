@@ -124,16 +124,17 @@ class WordController extends Controller
     public function checkAnswer(Request $r): \Illuminate\Http\JsonResponse
     {
         $inputs = (object)$r->all();
+        $toTrim = " \n\r\t\v\x00.!?";
 
         $langToCheck = $inputs->lang === 'norwegian' ? 'french' : 'norwegian';
-        $answer = trim($inputs->answer, " \n\r\t\v\x00.?");
+        $answer = trim($inputs->answer, $toTrim);
 
         $wordOrigin = $this->getOne($inputs->id, $inputs->type);
         $words = explode('/', $wordOrigin->{$langToCheck});
 
         $isMatch = false;
         foreach ($words as $word) {
-            if (Str::lower(trim($word, " \n\r\t\v\x00.?")) === Str::lower($answer))
+            if (Str::lower(trim($word, $toTrim)) === Str::lower($answer))
                 $isMatch = true;
         }
 

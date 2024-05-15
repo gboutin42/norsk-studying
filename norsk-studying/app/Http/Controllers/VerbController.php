@@ -289,7 +289,7 @@ class VerbController extends Controller
             $verbOrigin = $this->getOne($id);
             $isMatch = true;
             foreach ($answers as $key => $answer) {
-                if ($verbOrigin->{$key} && Str::lower(trim($answer, " \n\r\t\v\x00.?")) !== $verbOrigin->{$key}) {
+                if ($verbOrigin->{$key} && Str::lower(trim($answer, " \n\r\t\v\x00.!?")) !== $verbOrigin->{$key}) {
                     $isMatch = false;
                     $errors[$key] = true;
                 }
