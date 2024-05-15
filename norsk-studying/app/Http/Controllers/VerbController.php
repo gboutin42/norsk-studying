@@ -10,11 +10,6 @@ use Illuminate\Support\Str;
 
 class VerbController extends Controller
 {
-    private const WORD_TYPE = [
-        ["value" => '3', "label" => 'Mot'],
-        ["value" => '4', "label" => 'Phrase'],
-    ];
-
     private const SWITCH_OPTIONS = [
         ["value" => '1', "label" => 'Actif'],
         ["value" => '0', "label" => 'Inactif']
@@ -61,21 +56,42 @@ class VerbController extends Controller
      */
     public function show(int $id = 0): \Illuminate\Http\JsonResponse
     {
-        $verb = $this->getNextRandomVerb($id ?? 0);
-        $whichDisplayed = $this->getFieldToDisplay();
+        try {
+            $verb = $this->getNextRandomVerb($id ?? 0);
 
-        while ($verb->{$whichDisplayed} === null)
-            $whichDisplayed = $this->getFieldToDisplay();
+            if ($verb) {
+                $whichDisplayed = $this->getFieldToDisplay();
 
-        return response()->json([
-            "success" => true,
-            "code" => 200,
-            "message" => null,
-            "data" => [
-                "verb" => $verb,
-                "whichDisplayed" => $whichDisplayed
-            ]
-        ], 200);
+                while ($verb->{$whichDisplayed} === null)
+                    $whichDisplayed = $this->getFieldToDisplay();
+
+                return response()->json([
+                    "success" => true,
+                    "code" => 200,
+                    "message" => null,
+                    "data" => [
+                        "verb" => $verb,
+                        "whichDisplayed" => $whichDisplayed
+                    ]
+                ], 200);
+            }
+
+            return response()->json([
+                "success" => false,
+                "code" => 404,
+                "message" => "Empty data",
+                "data" => null
+
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "success" => false,
+                "code" => $th->getCode(),
+                "message" => $th->getMessage(),
+                "data" => null
+
+            ]);
+        }
     }
 
     /**
@@ -102,13 +118,12 @@ class VerbController extends Controller
      */
     private function getNextRandomVerb(int $previousId = 0): \App\Models\Verb|null
     {
-        $verbs = Verb::whereStatus(1)->get();
-        $length = $verbs->count();
-        if ($length >= 1) {
-            $random = random_int(1, $length);
-            while ($random === $previousId) {
-                $random = random_int(1, $length);
-            }
+        $verbIds = Verb::whereStatus(1)->pluck("id")->toArray();
+
+        if (count($verbIds) > 0) {
+            $random = Arr::random($verbIds);
+            while ($random === $previousId)
+                $random = Arr::random($verbIds);
             $verb = $this->getOne($random);
 
             return $verb ?? $this->getNextRandomWord($previousId);
@@ -189,69 +204,71 @@ class VerbController extends Controller
                         return response()->json([
                             'message' => 'Row update with success',
                             'success' => true,
-                            'status' => 200
+                            'code' => 200
                         ], 200);
 
                     return response()->json([
                         'message' => 'Impossible to save',
                         'success' => false,
-                        'status' => 500
+                        'code' => 500
                     ], 500);
                 }
 
                 return response()->json([
                     'message' => 'Nothing to change',
                     'success' => true,
-                    'status' => 200
+                    'code' => 200
                 ], 200);
             }
 
             return response()->json([
                 'message' => 'Row not found',
                 'success' => true,
-                'status' => 404
+                'code' => 404
             ], 404);
         } catch (\Throwable $e) {
             return response()->json([
                 'message' => 'An error has occured' . $e->getMessage(),
                 'success' => false,
-                'status' => $e->getCode()
+                'code' => $e->getCode()
             ], $e->getCode());
         }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified resource from database
+     *
+     * @param Verb $verb
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(string $id)
+    public function destroy(Verb $verb): \Illuminate\Http\JsonResponse
     {
         try {
-            $verb = Verb::find($id);
             if ($verb) {
                 if ($verb->delete())
                     return response()->json([
-                        'data' => ['id' => $id],
+                        'data' => $verb,
                         'success' => true,
-                        'status' => 200
+                        'code' => 200
                     ], 200);
 
                 return response()->json([
                     'message' => 'Impossible to delete this row',
                     'success' => false,
-                    'status' => 500
+                    'code' => 500
                 ], 500);
             }
 
             return response()->json([
                 'message' => 'Row not found',
                 'success' => false,
-                'status' => 404
+                'code' => 404
             ], 404);
         } catch (\Throwable $e) {
             return response()->json([
                 'message' => $e->getMessage(),
                 'success' => false,
-                'status' => 500
+                'code' => 500
             ], 500);
         }
     }
@@ -282,85 +299,125 @@ class VerbController extends Controller
                 ? response()->json(
                     [
                         "success" => true,
-                        "status" => 200
+                        "code" => 200
                     ]
                 )
                 : response()->json(
                     [
                         "data" => $errors,
                         "success" => false,
-                        "status" => 400
+                        "code" => 400
                     ]
                 );
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => $th->getMessage(),
                 'success' => false,
-                'status' => 500
+                'code' => 500
             ], 500);
         }
     }
 
-    public function getForm()
+    /**
+     * Disables or enables the verb
+     *
+     * @param Verb $verb
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function disable(Verb $verb): \Illuminate\Http\JsonResponse
+    {
+        try {
+            if ($verb) {
+                $verb->status = !$verb->status;
+                if ($verb->save())
+                    return response()->json([
+                        "data" => $verb,
+                        "message" => "",
+                        "success" => true,
+                        "code" => 200
+                    ]);
+
+                return response()->json([
+                    "data" => $verb,
+                    "message" => "Something wrong happend during the disabling process",
+                    "success" => false,
+                    "code" => 500
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'Row not found',
+                'success' => false,
+                'code' => 404
+            ], 404);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "data" => null,
+                "message" => $th->getMessage(),
+                "success" => false,
+                "code" => $th->getCode()
+            ]);
+        }
+    }
+
+    /**
+     * Gets form to create a new row in verbs table
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getForm(): \Illuminate\Http\JsonResponse
     {
         try {
 
             $fields = [
                 [
-                    "key" => 'norwegian',
-                    "label" => 'Norvégien',
-                    "type" => 'text',
-                    "xs" => 12,
-                    "sm" => 6,
-                    "rules" => [
-                        "required" => true
-                    ]
-                ],
-                [
-                    "key" => 'french',
+                    "key" => 'translation',
                     "label" => 'Français',
                     "type" => 'text',
-                    "xs" => 12,
-                    "sm" => 6,
                     "rules" => [
                         "required" => true
                     ]
                 ],
                 [
-                    "key" => 'help',
-                    "label" => 'Aide',
+                    "key" => 'infinitiv',
+                    "label" => 'Infinitif',
                     "type" => 'text',
-                    "xs" => 12,
-                    "sm" => 6
-                ],
-                [
-                    "key" => 'type',
-                    "label" => 'Prénom',
-                    "type" => "select",
-                    "value" => self::WORD_TYPE[0]['value'],
-                    "options" => self::WORD_TYPE,
                     "rules" => [
                         "required" => true
                     ]
-
+                ],
+                [
+                    "key" => 'present',
+                    "label" => 'Présent',
+                    "type" => 'text',
+                    "rules" => [
+                        "required" => true
+                    ]
+                ],
+                [
+                    "key" => 'preteritum',
+                    "label" => 'Preteritum',
+                    "type" => 'text',
+                ],
+                [
+                    "key" => 'perfektum',
+                    "label" => 'Perfectum',
+                    "type" => 'text',
                 ],
                 [
                     "key" => 'status',
-                    "label" => 'Email',
+                    "label" => 'Statut',
                     "type" => 'toggleRadio',
-                    "value" => self::SWITCH_OPTIONS[1]["value"],
-                    "options" => self::SWITCH_OPTIONS,
-                    "rules" => [
-                        "required" => true
-                    ]
+                    "value" => self::SWITCH_OPTIONS[0]["value"],
+                    "options" => self::SWITCH_OPTIONS
                 ]
             ];
 
-
             return response()->json([
-                "data" => $fields,
+                "fields" => $fields,
                 "success" => true,
-                "message" => null
+                "message" => null,
+                "code" => 200
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -372,12 +429,87 @@ class VerbController extends Controller
         }
     }
 
-    public function getFormEdit(int $id)
+    /**
+     * Gets form to update a row in verbs table
+     *
+     * @param Verb $verb
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getFormEdit(Verb $verb): \Illuminate\Http\JsonResponse
     {
         try {
-            //code...
+            if ($verb) {
+                $fields = [
+
+                    [
+                        "key" => 'translation',
+                        "label" => 'Français',
+                        "type" => 'text',
+                        "value" => $verb->translation,
+                        "rules" => [
+                            "required" => true
+                        ]
+                    ],
+                    [
+                        "key" => 'infinitiv',
+                        "label" => 'Infinitif',
+                        "type" => 'text',
+                        "value" => $verb->infinitiv,
+                        "rules" => [
+                            "required" => true
+                        ]
+                    ],
+                    [
+                        "key" => 'present',
+                        "label" => 'Présent',
+                        "type" => 'text',
+                        "value" => $verb->present,
+                        "rules" => [
+                            "required" => true
+                        ]
+                    ],
+                    [
+                        "key" => 'preteritum',
+                        "label" => 'Preteritum',
+                        "type" => 'text',
+                        "value" => $verb->preteritum ?? null,
+                    ],
+                    [
+                        "key" => 'perfektum',
+                        "label" => 'Perfectum',
+                        "type" => 'text',
+                        "value" => $verb->perfektum ?? null,
+                    ],
+                    [
+                        "key" => 'status',
+                        "label" => 'Statut',
+                        "type" => 'toggleRadio',
+                        "value" => (string)$verb->status,
+                        "options" => self::SWITCH_OPTIONS
+                    ]
+
+                ];
+
+                return response()->json([
+                    "fields" => $fields,
+                    "success" => true,
+                    "message" => null,
+                    "code" => 200
+                ], 200);
+            }
+
+            return response()->json([
+                'message' => 'Row not found',
+                'success' => false,
+                'code' => 404
+            ], 404);
         } catch (\Throwable $th) {
-            //throw $th;
+            return response()->json([
+                "data" => null,
+                "message" => $th->getMessage(),
+                "code" => $th->getCode(),
+                "success" => false
+            ], 500);
         }
     }
 }

@@ -5,6 +5,12 @@ import { useEffect, useState } from 'react';
 import axiosClient from '../../../axios';
 import { Box, Chip } from '@mui/material';
 import { renderDate } from '../../../components/functions/date';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
+import EditVerb from './form/EditVerb';
+import AddNewVerb from './form/AddNewVerbs';
 
 function displayStatus(value) {
     const label = ["Inactif", "Actif"];
@@ -33,6 +39,9 @@ function Verbs() {
         page: 0,
         pageSize: 5,
     });
+    const [openEdit, setOpenEdit] = useState(false)
+    const [id, setId] = useState(null)
+
     const columns = [
         {
             field: 'translation',
@@ -65,7 +74,7 @@ function Verbs() {
         },
         {
             field: 'perfektum',
-            headerName: 'Perfektum',
+            headerName: 'Perfectum',
             headerAlign: 'center',
             align: 'center',
             flex: 1,
@@ -107,54 +116,50 @@ function Verbs() {
             cellClassName: 'actions',
             getActions: (params) => [
                 <GridActionsCellItem
-                    // icon={<EditIcon />}
+                    icon={<EditRoundedIcon />}
                     label="Modifier"
+                    onClick={() => handleEditVerbs(params.row.id)}
+                    showInMenu
+                />,
+                <GridActionsCellItem
+                    icon={params.row.status === 1 ? <CloseRoundedIcon /> : <DoneRoundedIcon />}
+                    label={params.row.status === 1 ? "Désactiver" : "Activer"}
                     onClick={() => {
-                        // setUserId(params.row.id_user)
-                        // LeonixApi.Get("users/" + params.row.id_user + "/form", { userType: "user" })
-                        //     .then(response => {
-                        //         if (response.success) {
-                        //             setListInputsUpdate(response.data.fields)
-                        //             handleOpenFormUpdate()
-                        //         } else
-                        //             setAlert('warning', "Impossible de récupérer les informations du formulaire")
-                        //     })
+                        axiosClient.patch('verbs/' + params.row.id + '/disable')
+                            .then(response => {
+                                if (response.data.success) {
+                                    const data = response.data.data
+                                    setAlert('success', "Mot " + (data.status ? "activé" : "désactivé"))
+                                    getDatasTable()
+                                } else
+                                    setAlert('error', "Le statut du mot n'a pu être modifié")
+                            })
                     }}
                     showInMenu
                 />,
                 <GridActionsCellItem
-                    // icon={<PersonOffIcon />}
-                    label="Désactiver"
-                    onClick={() => {
-                        // LeonixApi.Patch('users/' + params.row.id_user + '/disable')
-                        //     .then(response => {
-                        //         if (response.success) {
-                        //             setAlert('success', "Utilisateur désactivé")
-                        //             getDatasTable()
-                        //         } else
-                        //             setAlert('error', "L'Utilisateur n'a pu être désactivé")
-                        //     })
-                    }}
-                    showInMenu
-                />,
-                <GridActionsCellItem
-                    // icon={<PersonOffIcon />}
+                    icon={<DeleteRoundedIcon />}
                     label="Supprimer"
                     onClick={() => {
-                        // LeonixApi.Patch('users/' + params.row.id_user + '/disable')
-                        //     .then(response => {
-                        //         if (response.success) {
-                        //             setAlert('success', "Utilisateur désactivé")
-                        //             getDatasTable()
-                        //         } else
-                        //             setAlert('error', "L'Utilisateur n'a pu être désactivé")
-                        //     })
+                        axiosClient.delete('verbs/' + params.row.id)
+                            .then(response => {
+                                if (response.data.success) {
+                                    setAlert('success', "Mot supprimé")
+                                    getDatasTable()
+                                } else
+                                    setAlert('error', "Le mot n'a pu être supprimé")
+                            })
                     }}
                     showInMenu
                 />
             ]
         }
     ]
+
+    const handleEditVerbs = (id) => {
+        setOpenEdit(true)
+        setId(id)
+    }
 
     const getDatasTable = (signal = null) => {
         if (!isLoadingData)
@@ -184,7 +189,7 @@ function Verbs() {
 
     return <Box height="inherit" width="inherit">
         <DataGrid
-            checkboxSelection
+            // checkboxSelection
             columns={columns}
             rows={table}
             sx={{ boxShadow: 5 }}
@@ -205,6 +210,10 @@ function Verbs() {
             disableColumnSelector
             disableDensitySelector
         />
+        <AddNewVerb getDatasTable={getDatasTable} />
+        {openEdit &&
+            <EditVerb id={id} open={openEdit} setOpen={setOpenEdit} getDatasTable={getDatasTable} />
+        }
     </Box>
 }
 

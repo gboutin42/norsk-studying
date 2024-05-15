@@ -53,7 +53,7 @@ function VerbRevision({ type }) {
         "perfektum"
     ]
 
-    useEffect(() => AbortControllerSignal([getWord]), [getNewVerb])
+    useEffect(() => AbortControllerSignal([getVerb]), [getNewVerb])
     useEffect(() => {
         if (nbErrorConsecutive === 3)
             setDisplayAnswers(true)
@@ -75,10 +75,10 @@ function VerbRevision({ type }) {
         )
     }
 
-    const getWord = (signal) => {
+    const getVerb = (signal) => {
         if (getNewVerb) {
             reinitializeDefaultValues()
-            axiosClient.get('/verbs/show/' + (origin.id !== null ? origin.id : 0), { signal: signal })
+            axiosClient.get('/verbs/' +  + (origin.id !== null ? origin.id : 0), { signal: signal })
                 .then(response => {
                     if (response.data.success && response.data.data) {
                         const data = response.data.data
@@ -108,7 +108,7 @@ function VerbRevision({ type }) {
                             setGetNewVerb(false)
                         }
                         else
-                            setAlert('info', "Aucun verbe n'hexiste de manière active.", { vertical: 'bottom', horizontal: 'right' })
+                            setAlert('info', "Aucun verbe n'existe de manière active.", { vertical: 'bottom', horizontal: 'right' })
                     } else {
                         setAlert('warning', "Impossible de récupérer les données", { vertical: 'bottom', horizontal: 'right' })
                     }
