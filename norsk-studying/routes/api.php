@@ -19,7 +19,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->group(function () {
+    /** Logout route */
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    /**
+     * Users routes
+     */
     Route::prefix('users')->group(function () {
         Route::get('/', [UserController::class, 'index']);
         Route::get('/show/{id?}', [UserController::class, 'show']);
@@ -29,22 +34,34 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/{id}', [UserController::class, 'getFormEdit']);
         });
     });
+
+    /**
+     * Verbs routes
+     */
     Route::prefix('verbs')->group(function () {
         Route::get('/', [VerbController::class, 'index']);
-        Route::get('/show/{id?}', [VerbController::class, 'show']);
+        Route::post('/', [VerbController::class, 'store']);
         Route::post('/check-answer', [VerbController::class, 'checkAnswer']);
-        Route::prefix('/form')->group(function () {
-            Route::get('/', [VerbController::class, 'getForm']);
-            Route::get('/{id}', [VerbController::class, 'getFormEdit']);
+        Route::get('/form', [VerbController::class, 'getForm']);
+        Route::prefix('{verb}')->group(function () {
+            Route::get('/form', [VerbController::class, 'getFormEdit']);
+            Route::patch('/', [VerbController::class, 'update']);
+            Route::patch('/disable', [VerbController::class, 'disable']);
+            Route::delete('/', [VerbController::class, 'destroy']);
         });
+        Route::get('/{id?}', [VerbController::class, 'show']);
     });
+
+    /**
+     * Words routes
+     */
     Route::prefix('words')->group(function () {
         Route::get('/', [WordController::class, 'index']);
         Route::post('/', [WordController::class, 'store']);
         Route::post('/check-answer', [WordController::class, 'checkAnswer']);
-        Route::get('/show/{id?}/{type?}', [WordController::class, 'show']);
         Route::get('/form', [WordController::class, 'getForm']);
-        Route::prefix('{id}')->group(function () {
+        Route::prefix('{word?}')->group(function () {
+            Route::get('/{type?}', [WordController::class, 'show']);
             Route::get('/form', [WordController::class, 'getFormEdit']);
             Route::patch('/', [WordController::class, 'update']);
             Route::patch('/disable', [WordController::class, 'disable']);
@@ -53,5 +70,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
+/**
+ * Auth routes
+ */
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);

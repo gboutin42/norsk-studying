@@ -27,6 +27,8 @@ export default function AddNewWord(props) {
             .then(response => {
                 if (response.data.success)
                     setListInputs(response.data.fields)
+                else
+                    setAlert('error', "Impossible de récupérer les informations du formulaire")
             })
     }
 
@@ -61,7 +63,7 @@ export default function AddNewWord(props) {
     return <>
         <Zoom in={listInputs !== null}>
             <Button variant='contained' sx={{ marginTop: 2 }} onClick={handleOpenForm}>
-                Nouveau mot
+                Ajouter un mot
             </Button>
         </Zoom>
         {
@@ -70,7 +72,7 @@ export default function AddNewWord(props) {
                 onSubmit={handleSubmit}
                 listInputs={listInputs}
                 open={formOpen}
-                title="Nouveau mot"
+                title="Ajout d'un nouveau mot"
             />
         }
     </>

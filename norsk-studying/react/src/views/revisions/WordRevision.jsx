@@ -45,7 +45,7 @@ function WordRevision({ type }) {
     const getWord = (signal) => {
         if (getNewWord) {
             reinitializeDefaultValues()
-            axiosClient.get('/words/show/' + (origin.id !== null ? origin.id : 0) + '/' + type, { signal: signal })
+            axiosClient.get('/words/' + (origin.id !== null ? origin.id : 0) + '/' + type, { signal: signal })
                 .then(response => {
                     if (response.data.success && response.data.data) {
                         const data = response.data.data
@@ -62,7 +62,7 @@ function WordRevision({ type }) {
                             setGetNewWord(false)
                         }
                         else
-                            setAlert('info', "Aucun mot n'hexiste de manière active dans cette catégorie", { vertical: 'bottom', horizontal: 'right' })
+                            setAlert('info', "Aucun mot n'existe de manière active dans cette catégorie", { vertical: 'bottom', horizontal: 'right' })
                     } else {
                         setAlert('warning', "Impossible de récupérer les données", { vertical: 'bottom', horizontal: 'right' })
                     }

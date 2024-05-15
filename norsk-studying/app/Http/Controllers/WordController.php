@@ -103,10 +103,9 @@ class WordController extends Controller
         }
 
         if (count($ids) > 0) {
-            $random = $ids[array_rand($ids, 1)];
-            while ($random === $previousId) {
-                $random = $ids[array_rand($ids, 1)];
-            }
+            $random = Arr::random($ids);
+            while ($random === $previousId)
+                $random = Arr::random($ids);
             $word = $this->getOne($random, $type);
 
             return $word ?? $this->getNextRandomWord($previousId, $type);
@@ -209,14 +208,13 @@ class WordController extends Controller
      * Update the specified resource in storage.
      *
      * @param WordRequest $r
-     * @param integer $id
+     * @param Word $word
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(WordRequest $r, int $id): \Illuminate\Http\JsonResponse
+    public function update(WordRequest $r, Word $word): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = (object)$r->validated();
-            $word = Word::find($id);
 
             if ($word) {
                 $word->norwegian = $validated->norwegian;
@@ -264,17 +262,16 @@ class WordController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param integer $id
+     * @param Word $word
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(int $id): \Illuminate\Http\JsonResponse
+    public function destroy(Word $word): \Illuminate\Http\JsonResponse
     {
         try {
-            $word = Word::find($id);
             if ($word) {
                 if ($word->delete())
                     return response()->json([
-                        'id' => $id,
+                        'data' => $word,
                         'success' => true,
                         'code' => 200
                     ], 200);
@@ -303,13 +300,12 @@ class WordController extends Controller
     /**
      * Disables or enables the word
      *
-     * @param integer $id
+     * @param Word $word
      * @return \Illuminate\Http\JsonResponse
      */
-    public function disable(int $id): \Illuminate\Http\JsonResponse
+    public function disable(Word $word): \Illuminate\Http\JsonResponse
     {
         try {
-            $word = Word::find($id);
             if ($word) {
                 $word->status = !$word->status;
                 if ($word->save())
@@ -400,7 +396,8 @@ class WordController extends Controller
             return response()->json([
                 "fields" => $fields,
                 "success" => true,
-                "message" => null
+                "message" => null,
+                "code" => 200
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
@@ -415,14 +412,12 @@ class WordController extends Controller
     /**
      * Gets form to update a row in words table
      *
-     * @param integer $id
+     * @param Word $word
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getFormEdit(int $id): \Illuminate\Http\JsonResponse
+    public function getFormEdit(Word $word): \Illuminate\Http\JsonResponse
     {
         try {
-            $word = Word::find($id);
-
             if ($word) {
                 $fields = [
                     [
@@ -476,19 +471,12 @@ class WordController extends Controller
                 return response()->json([
                     "fields" => $fields,
                     "success" => true,
-                    "message" => null
-                ]);
+                    "message" => null,
+                    "code" => 200
+                ], 200);
             }
 
             return response()->json([
-                "data" => ["id" => $id],
-                "message" => "This model doesn't exist",
-                "code" => 500,
-                "success" => false
-            ]);
-
-            return response()->json([
-                "data" => ["id" => $id],
                 'message' => 'Row not found',
                 'success' => false,
                 'code' => 404
@@ -499,7 +487,7 @@ class WordController extends Controller
                 "message" => $th->getMessage(),
                 "code" => $th->getCode(),
                 "success" => false
-            ]);
+            ], 500);
         }
     }
 }

@@ -26,6 +26,8 @@ export default function EditWord(props) {
             .then(response => {
                 if (response.data.success)
                     setListInputs(response.data.fields)
+                else
+                    setAlert('error', "Impossible de récupérer les informations du formulaire")
             })
     }
 
@@ -45,9 +47,9 @@ export default function EditWord(props) {
             .then(response => {
                 if (response.data.success) {
                     props.getDatasTable()
-                    setAlert('success', "Produit modifié avec succès")
+                    setAlert('success', "Mot modifié avec succès")
                 } else {
-                    setAlert('error', "Le produit n'a pu être modifié")
+                    setAlert('error', "Le mot n'a pu être modifié")
                 }
             })
             .catch(error => {
