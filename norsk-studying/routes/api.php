@@ -60,13 +60,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [WordController::class, 'store']);
         Route::post('/check-answer', [WordController::class, 'checkAnswer']);
         Route::get('/form', [WordController::class, 'getForm']);
-        Route::prefix('{word?}')->group(function () {
-            Route::get('/{type?}', [WordController::class, 'show']);
+        Route::prefix('{word}')->group(function () {
             Route::get('/form', [WordController::class, 'getFormEdit']);
             Route::patch('/', [WordController::class, 'update']);
             Route::patch('/disable', [WordController::class, 'disable']);
             Route::delete('/', [WordController::class, 'destroy']);
         });
+        Route::get('/{id?}/{type?}', [WordController::class, 'show']);
     });
 });
 
