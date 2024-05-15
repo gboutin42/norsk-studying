@@ -22,7 +22,7 @@ export default function EditVerb(props) {
     const [listInputs, setListInputs] = useState(null);
 
     const getForm = (signal = null) => {
-        axiosClient.get(baseUrl + '/form/', { signal: signal })
+        axiosClient.get(baseUrl + '/form', { signal: signal })
             .then(response => {
                 if (response.data.success)
                     setListInputs(response.data.fields)
