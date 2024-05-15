@@ -8,6 +8,7 @@ import Users from "./views/managing/users/Users";
 import Home from "./views/home/Home";
 import Verbs from "./views/managing/verbs/Verbs";
 import MainRevision from "./views/revisions/MainRevision";
+import PrivateRoute from "./privateRoute";
 
 const router = createBrowserRouter([
     {
@@ -45,15 +46,15 @@ const router = createBrowserRouter([
                 children: [
                     {
                         path: '/manage/words',
-                        element: <Words />
+                        element: <PrivateRoute><Words /></PrivateRoute>
                     },
                     {
                         path: '/manage/verbs',
-                        element: <Verbs />
+                        element: <PrivateRoute><Verbs /></PrivateRoute>
                     },
                     {
                         path: '/manage/users',
-                        element: <Users />
+                        element: <PrivateRoute><Users /></PrivateRoute>
                     }
                 ]
             },
