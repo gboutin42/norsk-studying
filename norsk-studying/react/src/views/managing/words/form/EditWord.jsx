@@ -2,18 +2,28 @@ import AbortControllerSignal from "../../../../components/providers/AbortControl
 import SingleForm from "../../../../components/basics/Form/Single/SingleForm"
 import { useEffect, useState } from "react";
 import axiosClient from "../../../../axios";
+import { useSnackbar } from "notistack";
 
 export default function EditWord(props) {
-    console.log("on rentre ?")
-    console.log(props)
+    const baseUrl = '/words/' + props.id
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const setAlert = (type, message) => {
+        enqueueSnackbar(
+            message,
+            {
+                variant: type,
+                anchorOrigin: {
+                    vertical: 'bottom',
+                    horizontal: 'right'
+                }
+            }
+        )
+    }
     const [listInputs, setListInputs] = useState(null);
 
     const getForm = (signal = null) => {
-        console.log("on rentre ? 2")
-        console.log(props.id)
-        axiosClient.get('/words/form/' + props.id, { signal: signal })
+        axiosClient.get(baseUrl + '/form/', { signal: signal })
             .then(response => {
-                console.log(response.data)
                 if (response.data.success)
                     setListInputs(response.data.fields)
             })
@@ -31,9 +41,8 @@ export default function EditWord(props) {
             if (input.value !== undefined)
                 data = { ...data, [input.key]: input.value }
         })
-        axiosClient.patch("/words/edit/" + props.id, data)
+        axiosClient.patch(baseUrl, data)
             .then(response => {
-                console.log(response)
                 if (response.data.success) {
                     props.getDatasTable()
                     setAlert('success', "Produit modifié avec succès")

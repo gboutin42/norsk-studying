@@ -3,15 +3,28 @@ import AbortControllerSignal from "../../../../components/providers/AbortControl
 import SingleForm from "../../../../components/basics/Form/Single/SingleForm"
 import { useEffect, useState } from "react";
 import axiosClient from "../../../../axios";
+import { useSnackbar } from "notistack";
 
 export default function AddNewWord(props) {
+    const { enqueueSnackbar, closeSnackbar } = useSnackbar();
+    const setAlert = (type, message) => {
+        enqueueSnackbar(
+            message,
+            {
+                variant: type,
+                anchorOrigin: {
+                    vertical: 'bottom',
+                    horizontal: 'right'
+                }
+            }
+        )
+    }
     const [formOpen, setFormOpen] = useState(false)
     const [listInputs, setListInputs] = useState(null);
 
     const getForm = (signal = null) => {
         axiosClient.get('/words/form', { signal: signal })
             .then(response => {
-                console.log(response.data)
                 if (response.data.success)
                     setListInputs(response.data.fields)
             })
@@ -32,7 +45,6 @@ export default function AddNewWord(props) {
         })
         axiosClient.post("/words", data)
             .then(response => {
-                console.log(response)
                 if (response.data.success) {
                     props.getDatasTable()
                     setAlert('success', "Produit créé avec succès")

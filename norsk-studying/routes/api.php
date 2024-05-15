@@ -41,12 +41,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('words')->group(function () {
         Route::get('/', [WordController::class, 'index']);
         Route::post('/', [WordController::class, 'store']);
-        Route::patch('/edit/{id}', [WordController::class, 'update']);
         Route::post('/check-answer', [WordController::class, 'checkAnswer']);
         Route::get('/show/{id?}/{type?}', [WordController::class, 'show']);
-        Route::prefix('/form')->group(function () {
-            Route::get('/', [WordController::class, 'getForm']);
-            Route::get('/{id}', [WordController::class, 'getFormEdit']);
+        Route::get('/form', [WordController::class, 'getForm']);
+        Route::prefix('{id}')->group(function () {
+            Route::get('/form', [WordController::class, 'getFormEdit']);
+            Route::patch('/', [WordController::class, 'update']);
+            Route::patch('/disable', [WordController::class, 'disable']);
+            Route::delete('/', [WordController::class, 'destroy']);
         });
     });
 });

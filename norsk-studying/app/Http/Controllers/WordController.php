@@ -142,14 +142,14 @@ class WordController extends Controller
             ? response()->json(
                 [
                     "success" => true,
-                    "status" => 200
+                    "code" => 200
                 ]
             )
             : response()->json(
                 [
                     "data" => $wordOrigin,
                     "success" => false,
-                    "status" => 400
+                    "code" => 400
                 ]
             );
     }
@@ -209,10 +209,10 @@ class WordController extends Controller
      * Update the specified resource in storage.
      *
      * @param WordRequest $r
-     * @param string $id
+     * @param integer $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(WordRequest $r, string $id): \Illuminate\Http\JsonResponse
+    public function update(WordRequest $r, int $id): \Illuminate\Http\JsonResponse
     {
         try {
             $validated = (object)$r->validated();
@@ -230,41 +230,44 @@ class WordController extends Controller
                         return response()->json([
                             'message' => 'Row update with success',
                             'success' => true,
-                            'status' => 200
+                            'code' => 200
                         ], 200);
 
                     return response()->json([
                         'message' => 'Impossible to save',
                         'success' => false,
-                        'status' => 500
+                        'code' => 500
                     ], 500);
                 }
 
                 return response()->json([
                     'message' => 'Nothing to change',
                     'success' => true,
-                    'status' => 200
+                    'code' => 200
                 ], 200);
             }
 
             return response()->json([
                 'message' => 'Row not found',
                 'success' => true,
-                'status' => 404
+                'code' => 404
             ], 404);
         } catch (\Throwable $e) {
             return response()->json([
                 'message' => 'An error has occured' . $e->getMessage(),
                 'success' => false,
-                'status' => $e->getCode()
+                'code' => $e->getCode()
             ], $e->getCode());
         }
     }
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param integer $id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(string $id)
+    public function destroy(int $id): \Illuminate\Http\JsonResponse
     {
         try {
             $word = Word::find($id);
@@ -273,31 +276,79 @@ class WordController extends Controller
                     return response()->json([
                         'id' => $id,
                         'success' => true,
-                        'status' => 200
+                        'code' => 200
                     ], 200);
 
                 return response()->json([
                     'message' => 'Impossible to delete this row',
                     'success' => false,
-                    'status' => 500
+                    'code' => 500
                 ], 500);
             }
 
             return response()->json([
                 'message' => 'Row not found',
                 'success' => false,
-                'status' => 404
+                'code' => 404
             ], 404);
         } catch (\Throwable $e) {
             return response()->json([
                 'message' => $e->getMessage(),
                 'success' => false,
-                'status' => 500
+                'code' => 500
             ], 500);
         }
     }
 
-    public function getForm()
+    /**
+     * Disables or enables the word
+     *
+     * @param integer $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function disable(int $id): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $word = Word::find($id);
+            if ($word) {
+                $word->status = !$word->status;
+                if ($word->save())
+                    return response()->json([
+                        "data" => $word,
+                        "message" => "",
+                        "success" => true,
+                        "code" => 200
+                    ]);
+
+                return response()->json([
+                    "data" => $word,
+                    "message" => "Something wrong happend during the disabling process",
+                    "success" => false,
+                    "code" => 500
+                ]);
+            }
+
+            return response()->json([
+                'message' => 'Row not found',
+                'success' => false,
+                'code' => 404
+            ], 404);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "data" => null,
+                "message" => $th->getMessage(),
+                "success" => false,
+                "code" => $th->getCode()
+            ]);
+        }
+    }
+
+    /**
+     * Gets form to create a new row in words table
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getForm(): \Illuminate\Http\JsonResponse
     {
         try {
             $fields = [
@@ -361,7 +412,13 @@ class WordController extends Controller
         }
     }
 
-    public function getFormEdit(int $id)
+    /**
+     * Gets form to update a row in words table
+     *
+     * @param integer $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getFormEdit(int $id): \Illuminate\Http\JsonResponse
     {
         try {
             $word = Word::find($id);
@@ -403,7 +460,7 @@ class WordController extends Controller
                         "rules" => [
                             "required" => true
                         ]
-    
+
                     ],
                     [
                         "key" => 'status',
@@ -429,6 +486,13 @@ class WordController extends Controller
                 "code" => 500,
                 "success" => false
             ]);
+
+            return response()->json([
+                "data" => ["id" => $id],
+                'message' => 'Row not found',
+                'success' => false,
+                'code' => 404
+            ], 404);
         } catch (\Throwable $th) {
             return response()->json([
                 "data" => null,

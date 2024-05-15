@@ -7,6 +7,10 @@ import { Box, Chip } from '@mui/material';
 import { renderDate } from '../../../components/functions/date';
 import AddNewWord from './form/AddNewWord';
 import EditWord from './form/EditWord';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+import EditRoundedIcon from '@mui/icons-material/EditRounded';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 
 function displayValueName(value) {
     const match = [
@@ -114,38 +118,39 @@ function Words() {
             cellClassName: 'actions',
             getActions: (params) => [
                 <GridActionsCellItem
-                    // icon={<EditIcon />}
+                    icon={<EditRoundedIcon />}
                     label="Modifier"
                     onClick={() => handleEditWord(params.row.id)}
                     showInMenu
                 />,
                 <GridActionsCellItem
-                    // icon={<PersonOffIcon />}
-                    label="Désactiver"
+                    icon={params.row.status === 1 ? <CloseRoundedIcon /> : <DoneRoundedIcon />}
+                    label={params.row.status === 1 ? "Désactiver" : "Activer"}
                     onClick={() => {
-                        // LeonixApi.Patch('users/' + params.row.id_user + '/disable')
-                        //     .then(response => {
-                        //         if (response.success) {
-                        //             setAlert('success', "Utilisateur désactivé")
-                        //             getDatasTable()
-                        //         } else
-                        //             setAlert('error', "L'Utilisateur n'a pu être désactivé")
-                        //     })
+                        axiosClient.patch('words/' + params.row.id + '/disable')
+                            .then(response => {
+                                if (response.data.success) {
+                                    const data = response.data.data
+                                    setAlert('success', "Mot " + (data.status ? "activé" : "désactivé"))
+                                    getDatasTable()
+                                } else
+                                    setAlert('error', "Le statut du mot n'a pu être modifié")
+                            })
                     }}
                     showInMenu
                 />,
                 <GridActionsCellItem
-                    // icon={<PersonOffIcon />}
+                    icon={<DeleteRoundedIcon />}
                     label="Supprimer"
                     onClick={() => {
-                        // LeonixApi.Patch('users/' + params.row.id_user + '/disable')
-                        //     .then(response => {
-                        //         if (response.success) {
-                        //             setAlert('success', "Utilisateur désactivé")
-                        //             getDatasTable()
-                        //         } else
-                        //             setAlert('error', "L'Utilisateur n'a pu être désactivé")
-                        //     })
+                        axiosClient.delete('words/' + params.row.id)
+                            .then(response => {
+                                if (response.data.success) {
+                                    setAlert('success', "Mot supprimé")
+                                    getDatasTable()
+                                } else
+                                    setAlert('error', "Le mot n'a pu être supprimé")
+                            })
                     }}
                     showInMenu
                 />
@@ -178,7 +183,7 @@ function Words() {
 
     return <Box height="inherit" width="inherit">
         <DataGrid
-            checkboxSelection
+            // checkboxSelection
             columns={columns}
             rows={table}
             sx={{ boxShadow: 5 }}
@@ -201,7 +206,7 @@ function Words() {
         />
         <AddNewWord getDatasTable={getDatasTable} />
         {openEdit &&
-            <EditWord id={id} open={openEdit} setOpen={setOpenEdit} />
+            <EditWord id={id} open={openEdit} setOpen={setOpenEdit} getDatasTable={getDatasTable} />
         }
     </Box>
 }
