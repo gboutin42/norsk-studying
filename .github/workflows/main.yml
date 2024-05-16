@@ -19,10 +19,7 @@ jobs:
         # You may pin to the exact commit or the version.
         # uses: annshiv/Hostinger-deployment@b28328ef39e6c67f631be787b4533dd37124a32f
         uses: annshiv/Hostinger-deployment@v2.1
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-          ssh-host: 91.108.101.6
-          ssh-port: 65002
+
       - name: Copy dist files
         run: |
           cd domains/api.tongue-twist-norway.com/norsk-studying/
