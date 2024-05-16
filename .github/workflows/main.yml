@@ -1,0 +1,24 @@
+name: Laravel & React Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy_prod:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+      - name: Build npm package
+        run: |
+          cd /norsk-studying/react/
+          npm run build
+      - name: deploy
+        run: ssh -p 65002 u124303159@91.108.101.6
+      - name: Copy dist files
+        run: |
+          cd domains/api.tongue-twist-norway.com/norsk-studying/
+          cp -r react/dist/* ../../tongue-twist-norway.com/public_html/.
+      - name: Laravel migrations
+        run: php artisan migrate
