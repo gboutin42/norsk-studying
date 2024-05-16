@@ -15,8 +15,10 @@ jobs:
           cd norsk-studying/react/
           npm install
           npm run build
-      - name: deploy
-        uses: kielabokkie/ssh-key-and-known-hosts-action@v1
+      - name: Deploy to Hostinger
+        # You may pin to the exact commit or the version.
+        # uses: annshiv/Hostinger-deployment@b28328ef39e6c67f631be787b4533dd37124a32f
+        uses: annshiv/Hostinger-deployment@v2.1
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           ssh-host: 91.108.101.6
