@@ -13,6 +13,7 @@ jobs:
       - name: Build npm package
         run: |
           cd norsk-studying/react/
+          npm install
           npm run build
       - name: deploy
         run: ssh -p 65002 u124303159@91.108.101.6
