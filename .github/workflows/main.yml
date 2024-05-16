@@ -16,7 +16,11 @@ jobs:
           npm install
           npm run build
       - name: deploy
-        run: ssh -p 65002 u124303159@91.108.101.6
+        uses: kielabokkie/ssh-key-and-known-hosts-action@v1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          ssh-host: 91.108.101.6
+          ssh-port: 65002
       - name: Copy dist files
         run: |
           cd domains/api.tongue-twist-norway.com/norsk-studying/
