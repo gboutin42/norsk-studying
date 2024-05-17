@@ -1,28 +1,29 @@
-name: Laravel & React Deployment
+name: Generate a build and push to another branch
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main # The branch name your are commit the new changes
 
 jobs:
-  deploy_prod:
+  build:
     runs-on: ubuntu-latest
+    name: Build and Push
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
-      - name: Build npm package
-        run: |
-          cd norsk-studying/react/
-          npm install
-          npm run build
-      - name: Deploy to Hostinger
-        # You may pin to the exact commit or the version.
-        # uses: annshiv/Hostinger-deployment@b28328ef39e6c67f631be787b4533dd37124a32f
-        uses: annshiv/Hostinger-deployment@v2.1
+      - name: git-checkout
+        uses: actions/checkout@v3
 
-      - name: Copy dist files
-        run: |
-          cd domains/api.tongue-twist-norway.com/norsk-studying/
-          cp -r react/dist/* ../../tongue-twist-norway.com/public_html/.
-      - name: Laravel migrations
-        run: php artisan migrate
+      - name: Install all dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build # The build command of your project
+
+      - name: Push
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: build # The branch name where you want to push the assets
+          FOLDER: build # The directory where your assets are generated
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub will automatically add this - you don't need to bother getting a token
+          MESSAGE: "Build: ({sha}) {msg}" # The commit message
