@@ -6,9 +6,9 @@
         "right": "all"
     },
     {
-        "title": "Révision",
+        "title": "Révisions",
         "type": "item",
-        "link": "/revision",
+        "link": "/revisions",
         "right": "all"
     },
     {

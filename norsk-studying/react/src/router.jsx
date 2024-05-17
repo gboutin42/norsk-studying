@@ -38,7 +38,7 @@ const router = createBrowserRouter([
                 element: <Home />
             },
             {
-                path: '/revision',
+                path: '/revisions',
                 element: <MainRevision />
             },
             {
