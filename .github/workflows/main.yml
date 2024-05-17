@@ -21,7 +21,9 @@ jobs:
           npm install
 
       - name: Build
-        run: npm run build # The build command of your project
+        run: |
+          cd tongue-twist-norway/react
+          npm run build # The build command of your project
 
       - name: Push
         uses: s0/git-publish-subdir-action@develop
