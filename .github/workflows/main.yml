@@ -14,7 +14,11 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install all dependencies
-        run: npm install
+        run: |
+          cd tongue-twist-norway
+          npm install
+          cd react
+          npm install
 
       - name: Build
         run: npm run build # The build command of your project
