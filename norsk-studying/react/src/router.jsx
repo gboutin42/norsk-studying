@@ -9,6 +9,7 @@ import Home from "./views/home/Home";
 import Verbs from "./views/managing/verbs/Verbs";
 import MainRevision from "./views/revisions/MainRevision";
 import PrivateRoute from "./privateRoute";
+import PageNotFound from "./views/page-not-found/PageNotFound";
 
 const router = createBrowserRouter([
     {
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
                 ]
             },
         ]
+    },
+    {
+        path: '*',
+        element: <PageNotFound />
     }
 ])
 
